@@ -1,5 +1,7 @@
 #!/usr/bin/node
 
+import { linkedList } from './classes.js';
+
 /* 
 	PSEUDOCODE: 
 
@@ -23,10 +25,6 @@
 export const knight = function knightMoves(startCord, endCord) {
 	let [startRow, startCol] = startCord;
 	let [endRow, endCol] = endCord;
-	let queue = [startCord];
-	let queueTwo = [...queue];
-	let endCordStr = JSON.stringify(endCord);
-
 	// both arrays cannot be less than 0 or more than 7;
 	if (
 		startRow < 0 ||
@@ -40,35 +38,40 @@ export const knight = function knightMoves(startCord, endCord) {
 	) {
 		throw Error('Wrong Coordinates');
 	}
+};
 
-	let i = 0;
-	while (
-		JSON.stringify(queue[queue.length - 1]) != JSON.stringify(endCord) &&
-		JSON.stringify(queueTwo[queueTwo.length - 1]) != JSON.stringify(endCord)
-	) {
-		let visitVertexQueueOne = queue[i];
-		let discoverVertexQueueOne = [
-			visitVertexQueueOne[0] + 2,
-			visitVertexQueueOne[1] + 1,
+export const graph = function representGraph(startCord, endCord) {
+	let queue = [startCord];
+	let adjacencyList = [];
+	let rules = [
+		[2, 1],
+		[1, 2],
+		[-2, -1],
+		[-1, -2],
+	];
+	while (queue.length != 0) {
+		let list = new linkedList();
+		let visitVertex = queue[0];
+		let childVertexRight = [
+			visitVertex[0] + rules[0][0],
+			visitVertex[1] + rules[0][1],
 		];
-		queue.push(discoverVertexQueueOne);
-		let visitVertexQueueTwo = queue[i];
-		let discoverVertexQueueTwo = [
-			visitVertexQueueTwo[0] + 1,
-			visitVertexQueueTwo[1] + 2,
+		let childVertexLeft = [
+			visitVertex[0] + rules[1][0],
+			visitVertex[1] + rules[1][1],
 		];
-		queueTwo.push(discoverVertexQueueTwo);
-		i += 1;
+		list.addVertex(visitVertex);
+		list.addNode(childVertexLeft);
+		list.addNode(childVertexRight);
+		adjacencyList.push(list);
+		queue.splice(0, 1);
+		if (
+			JSON.stringify(childVertexLeft) != JSON.stringify(endCord) &&
+			JSON.stringify(childVertexRight) != JSON.stringify(endCord)
+		) {
+			queue.push(childVertexLeft, childVertexRight);
+		}
 	}
 
-	if (
-		JSON.stringify(queue[queue.length - 1]) == endCordStr &&
-		JSON.stringify(queueTwo[queueTwo.length - 1]) == endCordStr
-	) {
-		console.log(queue, queueTwo);
-	} else if (JSON.stringify(queue[queue.length - 1]) == endCordStr) {
-		console.log(queue);
-	} else {
-		console.log(queueTwo);
-	}
+	return adjacencyList;
 };
