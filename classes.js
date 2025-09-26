@@ -6,13 +6,11 @@ class Node {
 }
 
 export class linkedList {
-	root;
 	vertex;
-
+	root;
 	addVertex(coordinates) {
 		this.vertex = coordinates;
 	}
-
 	addNode(coordinates) {
 		let curr = this.root;
 		if (curr == undefined) {
