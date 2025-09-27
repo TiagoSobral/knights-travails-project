@@ -20,6 +20,16 @@ import { linkedList } from './classes.js';
 	- Traverse both
 	- Compare which queue has the shortest length 
 	- return the one with the shortest length 
+
+
+	Moves:
+	- Cannot go overboard (need to check with debugger)
+
+	Shortest path:
+	- Find a way to traverse the graph and its different paths to the endCord.
+	- Need to keep track of the paths to not repeat.
+
+
 	*/
 
 export const knight = function knightMoves(startCord, endCord) {
@@ -44,52 +54,42 @@ export const graph = function representGraph(startCord, endCord) {
 	let queue = [startCord];
 	let adjacencyList = [];
 	let rules = [
-		[2, 1],
 		[1, 2],
-		[-2, -1],
+		[2, 1],
 		[-1, -2],
+		[-2, -1],
 	];
-
-	while (queue.length != 0) {
+	while (
+		JSON.stringify(queue[queue.length - 1]) != JSON.stringify(endCord) &&
+		JSON.stringify(queue[queue.length - 2]) != JSON.stringify(endCord)
+	) {
 		let list = new linkedList();
 		let visitVertex = queue[0];
-		let childVertexRight = [
-			visitVertex[0] + rules[0][0],
-			visitVertex[1] + rules[0][1],
-		];
-		let childVertexLeft = [
-			visitVertex[0] + rules[1][0],
-			visitVertex[1] + rules[1][1],
-		];
+		let rowCord = visitVertex[0];
+		let columnCord = visitVertex[1];
+		let nextMoveL = [rowCord + rules[0][0], columnCord + rules[0][1]];
+		let nextMoveR = [rowCord + rules[1][0], columnCord + rules[1][1]];
+
+		if (
+			(nextMoveL[0] > 0 && nextMoveL[0] > 7) ||
+			(nextMoveL[1] < 0 && nextMoveL[1] > 7)
+		) {
+			nextMoveL = [rowCord + rules[2][0], columnCord + rules[2][1]];
+		}
+		if (
+			(nextMoveR[0] > 0 && nextMoveR[0] > 7) ||
+			(nextMoveR[1] > 0 && nextMoveR[1] > 7)
+		) {
+			nextMoveL = [rowCord + rules[3][0], columnCord + rules[3][1]];
+		}
 
 		list.addVertex(visitVertex);
-
-		if (
-			childVertexLeft[0] > 0 &&
-			childVertexLeft[0] < 7 &&
-			childVertexLeft[1] > 0 &&
-			childVertexLeft[1] < 7
-		) {
-			list.addNode(childVertexLeft);
-		}
-		if (
-			childVertexRight[0] > 0 &&
-			childVertexRight[0] < 7 &&
-			childVertexRight[1] > 0 &&
-			childVertexRight[1] < 7
-		) {
-			list.addNode(childVertexRight);
-		}
-
+		list.addNode(nextMoveL);
+		list.addNode(nextMoveR);
 		adjacencyList.push(list);
 		queue.splice(0, 1);
-
-		if (
-			JSON.stringify(childVertexLeft) != JSON.stringify(endCord) &&
-			JSON.stringify(childVertexRight) != JSON.stringify(endCord)
-		) {
-			queue.push(childVertexLeft, childVertexRight);
-		}
+		queue.push(nextMoveL, nextMoveR);
+		console.log(queue);
 	}
 
 	return adjacencyList;
