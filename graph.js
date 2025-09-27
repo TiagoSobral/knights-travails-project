@@ -49,6 +49,7 @@ export const graph = function representGraph(startCord, endCord) {
 		[-2, -1],
 		[-1, -2],
 	];
+
 	while (queue.length != 0) {
 		let list = new linkedList();
 		let visitVertex = queue[0];
@@ -60,11 +61,29 @@ export const graph = function representGraph(startCord, endCord) {
 			visitVertex[0] + rules[1][0],
 			visitVertex[1] + rules[1][1],
 		];
+
 		list.addVertex(visitVertex);
-		list.addNode(childVertexLeft);
-		list.addNode(childVertexRight);
+
+		if (
+			childVertexLeft[0] > 0 &&
+			childVertexLeft[0] < 7 &&
+			childVertexLeft[1] > 0 &&
+			childVertexLeft[1] < 7
+		) {
+			list.addNode(childVertexLeft);
+		}
+		if (
+			childVertexRight[0] > 0 &&
+			childVertexRight[0] < 7 &&
+			childVertexRight[1] > 0 &&
+			childVertexRight[1] < 7
+		) {
+			list.addNode(childVertexRight);
+		}
+
 		adjacencyList.push(list);
 		queue.splice(0, 1);
+
 		if (
 			JSON.stringify(childVertexLeft) != JSON.stringify(endCord) &&
 			JSON.stringify(childVertexRight) != JSON.stringify(endCord)
