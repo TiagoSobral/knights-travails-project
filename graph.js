@@ -51,12 +51,17 @@ export const knight = function knightMoves(startCord, endCord) {
 };
 
 export const graph = function representGraph(startCord, endCord) {
+	debugger;
 	let queue = [startCord];
 	let adjacencyList = [];
 	let rules = [
 		[1, 2],
-		[2, 1],
+		[1, -2],
+		[-1, 2],
 		[-1, -2],
+		[2, 1],
+		[2, -1],
+		[-2, 1],
 		[-2, -1],
 	];
 	while (
@@ -65,32 +70,47 @@ export const graph = function representGraph(startCord, endCord) {
 	) {
 		let list = new linkedList();
 		let visitVertex = queue[0];
-		let rowCord = visitVertex[0];
-		let columnCord = visitVertex[1];
-		let nextMoveL = [rowCord + rules[0][0], columnCord + rules[0][1]];
-		let nextMoveR = [rowCord + rules[1][0], columnCord + rules[1][1]];
-
-		if (
-			(nextMoveL[0] > 0 && nextMoveL[0] > 7) ||
-			(nextMoveL[1] < 0 && nextMoveL[1] > 7)
-		) {
-			nextMoveL = [rowCord + rules[2][0], columnCord + rules[2][1]];
-		}
-		if (
-			(nextMoveR[0] > 0 && nextMoveR[0] > 7) ||
-			(nextMoveR[1] > 0 && nextMoveR[1] > 7)
-		) {
-			nextMoveL = [rowCord + rules[3][0], columnCord + rules[3][1]];
-		}
 
 		list.addVertex(visitVertex);
 		list.addNode(nextMoveL);
 		list.addNode(nextMoveR);
 		adjacencyList.push(list);
 		queue.splice(0, 1);
-		queue.push(nextMoveL, nextMoveR);
 		console.log(queue);
 	}
 
 	return adjacencyList;
+};
+
+const duplicates = function removeDuplicates(queue, coordinates) {
+	let result = false;
+	for (let cord of queue) {
+		let cordStr = JSON.stringify(cord);
+		let coordinatesStr = JSON.stringify(coordinates);
+		if (cordStr == coordinatesStr) {
+			result = true;
+		}
+	}
+	return result;
+};
+
+const plays = function possiblePlays(visitedNode, rulesArray) {
+	let rowCord = visitedNode[0];
+	let columnCord = visitedNode[1];
+	let moves = [];
+	for (let i = 0; i < 8; i++) {
+		let coordinates = [
+			rowCord + rulesArray[i][0],
+			columnCord + rulesArray[i][1],
+		];
+		if (
+			coordinates[0] > 0 &&
+			coordinates[0] < 8 &&
+			coordinates[1] > 0 &&
+			coordinates[1] < 8
+		) {
+			moves.push(coordinates);
+		}
+	}
+	return moves;
 };
