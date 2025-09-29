@@ -53,27 +53,22 @@ export const knight = function knightMoves(startCord, endCord) {
 export const graph = function representGraph(startCord, endCord) {
 	debugger;
 	let queue = [startCord];
+	let visitedNodes = [];
 	let adjacencyList = [];
-	let rules = [
-		[1, 2],
-		[1, -2],
-		[-1, 2],
-		[-1, -2],
-		[2, 1],
-		[2, -1],
-		[-2, 1],
-		[-2, -1],
-	];
-	while (
-		JSON.stringify(queue[queue.length - 1]) != JSON.stringify(endCord) &&
-		JSON.stringify(queue[queue.length - 2]) != JSON.stringify(endCord)
-	) {
+	while (!hasValue(endCord, queue)) {
 		let list = new linkedList();
 		let visitVertex = queue[0];
+		let moves = plays(visitVertex);
 
+		visitedNodes.push(visitVertex);
 		list.addVertex(visitVertex);
-		list.addNode(nextMoveL);
-		list.addNode(nextMoveR);
+
+		for (let i = 0; i < moves.length; i++) {
+			list.addNode(moves[i]);
+			if (!hasValue(moves[i], queue) && !hasValue(moves[i], visitedNodes))
+				queue.push(moves[i]);
+		}
+
 		adjacencyList.push(list);
 		queue.splice(0, 1);
 		console.log(queue);
@@ -82,7 +77,7 @@ export const graph = function representGraph(startCord, endCord) {
 	return adjacencyList;
 };
 
-const duplicates = function removeDuplicates(queue, coordinates) {
+const hasValue = function hasSameValue(coordinates, queue) {
 	let result = false;
 	for (let cord of queue) {
 		let cordStr = JSON.stringify(cord);
@@ -94,15 +89,22 @@ const duplicates = function removeDuplicates(queue, coordinates) {
 	return result;
 };
 
-const plays = function possiblePlays(visitedNode, rulesArray) {
+const plays = function possiblePlays(visitedNode) {
+	let rules = [
+		[1, 2],
+		[1, -2],
+		[-1, 2],
+		[-1, -2],
+		[2, 1],
+		[2, -1],
+		[-2, 1],
+		[-2, -1],
+	];
 	let rowCord = visitedNode[0];
 	let columnCord = visitedNode[1];
 	let moves = [];
 	for (let i = 0; i < 8; i++) {
-		let coordinates = [
-			rowCord + rulesArray[i][0],
-			columnCord + rulesArray[i][1],
-		];
+		let coordinates = [rowCord + rules[i][0], columnCord + rules[i][1]];
 		if (
 			coordinates[0] > 0 &&
 			coordinates[0] < 8 &&
