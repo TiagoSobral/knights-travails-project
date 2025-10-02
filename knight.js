@@ -21,9 +21,9 @@ export const knight = function knightMoves(startCord, endCord) {
 
 	let adjacencyList = graph(startCord, endCord);
 	// lastIndex is due to knowing the last index on the list is the one that has the end coordinates.
-	let lastIndex = adjacencyList[adjacencyList.length - 1];
+	let lastIndex = adjacencyList[adjacencyList.length - 1].vertex;
 	let distance = lastIndex.distance;
-	let path = [lastIndex.vertex];
+	let path = [lastIndex.coordinates];
 	let curr = lastIndex.parent;
 	while (curr != null) {
 		// because we are iterating from the end unshift adds from the beginning.
@@ -45,11 +45,7 @@ export const graph = function representGraph(startCord, endCord) {
 	let queue = [node];
 	while (queue.length != 0) {
 		let visitVertex = queue[0];
-		let list = new linkedList(
-			visitVertex.coordinates,
-			visitVertex.distance,
-			visitVertex.parent
-		);
+		let list = new linkedList(visitVertex);
 		// checks all the possible plays that don't go overboard or haven't been played.
 		let moves = plays(visitVertex.coordinates);
 
