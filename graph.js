@@ -18,13 +18,15 @@ export const knight = function knightMoves(startCord, endCord) {
 	) {
 		throw Error('Wrong Coordinates');
 	}
-	debugger;
+
 	let adjacencyList = graph(startCord, endCord);
+	// lastIndex is due to knowing the last index on the list is the one that has the end coordinates.
 	let lastIndex = adjacencyList[adjacencyList.length - 1];
 	let distance = lastIndex.distance;
 	let path = [lastIndex.vertex];
 	let curr = lastIndex.parent;
 	while (curr != null) {
+		// because we are iterating from the end unshift adds from the beginning.
 		path.unshift(curr.coordinates);
 		curr = curr.parent;
 	}
@@ -38,6 +40,7 @@ export const knight = function knightMoves(startCord, endCord) {
 export const graph = function representGraph(startCord, endCord) {
 	let visitedNodes = [];
 	let adjacencyList = [];
+	// creates a node instead of just values. This will help the path to the beginning.
 	let node = new Node(startCord);
 	let queue = [node];
 	while (queue.length != 0) {
@@ -47,6 +50,7 @@ export const graph = function representGraph(startCord, endCord) {
 			visitVertex.distance,
 			visitVertex.parent
 		);
+		// checks all the possible plays that don't go overboard or haven't been played.
 		let moves = plays(visitVertex.coordinates);
 
 		if (!hasValue(endCord, queue)) {
@@ -54,11 +58,13 @@ export const graph = function representGraph(startCord, endCord) {
 				if (!hasValue(moves[i], queue) && !hasValue(moves[i], visitedNodes)) {
 					let nextNode = new Node(
 						moves[i],
+						// the children are +1 distance away from their parent.
 						visitVertex.distance + 1,
 						visitVertex
 					);
 					list.addNode(nextNode);
 					queue.push(nextNode);
+					// whenever the end cord is found it breaks immediately.
 					if (JSON.stringify(moves[i]) == JSON.stringify(endCord)) break;
 				}
 			}
@@ -68,7 +74,7 @@ export const graph = function representGraph(startCord, endCord) {
 	}
 	return adjacencyList;
 };
-
+// checks if the value is on an array.
 const hasValue = function hasSameValue(coordinates, queue) {
 	let result = false;
 	for (let cord of queue) {
