@@ -7,21 +7,12 @@ export class Node {
 }
 
 export class linkedList {
-	constructor(vertex, distance, parent) {
-		this.vertex = vertex;
-		this.distance = distance;
-		this.parent = parent;
+	edges = [];
+	constructor(node) {
+		this.vertex = node;
 	}
 
 	addNode(node) {
-		let curr = this;
-		if (curr.nextNode == undefined) {
-			curr.nextNode = node;
-		} else {
-			while (curr.nextNode != undefined) {
-				curr = curr.nextNode;
-			}
-			curr.nextNode = node;
-		}
+		this.edges.push(node);
 	}
 }
