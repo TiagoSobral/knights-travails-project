@@ -1,6 +1,6 @@
 #!/usr/bin/node
 
-import { linkedList } from './classes.js';
+import { linkedList, Node } from './classes.js';
 
 /* 
 	PSEUDOCODE: 
@@ -48,39 +48,54 @@ export const knight = function knightMoves(startCord, endCord) {
 	) {
 		throw Error('Wrong Coordinates');
 	}
+
+	let adjacencyList = graph(startCol, endCord);
 };
 
 export const graph = function representGraph(startCord, endCord) {
 	debugger;
-	let queue = [startCord];
 	let visitedNodes = [];
 	let adjacencyList = [];
-	while (!hasValue(endCord, queue)) {
-		let list = new linkedList();
+	let distance = null;
+	let node = new Node(startCord, distance);
+	let queue = [node];
+	while (queue.length != 0) {
 		let visitVertex = queue[0];
-		let moves = plays(visitVertex);
+		let list = new linkedList(
+			visitVertex.coordinates,
+			visitVertex.distance,
+			visitVertex.parent
+		);
+		let moves = plays(visitVertex.coordinates);
 
-		visitedNodes.push(visitVertex);
-		list.addVertex(visitVertex);
-
-		for (let i = 0; i < moves.length; i++) {
-			list.addNode(moves[i]);
-			if (!hasValue(moves[i], queue) && !hasValue(moves[i], visitedNodes))
-				queue.push(moves[i]);
+		if (!hasValue(endCord, queue)) {
+			for (let i = 0; i < moves.length; i++) {
+				if (!hasValue(moves[i], queue) && !hasValue(moves[i], visitedNodes)) {
+					let nextNode = new Node(moves[i], distance + 1, visitVertex);
+					list.addNode(nextNode);
+					queue.push(nextNode);
+					if (JSON.stringify(moves[i]) == JSON.stringify(endCord)) break;
+				}
+			}
 		}
-
 		adjacencyList.push(list);
 		queue.splice(0, 1);
-		console.log(queue);
+		distance += 1;
 	}
-
 	return adjacencyList;
 };
+
+/* create a node that initially goes on to the queue
+- pick that node read it and based on its value coordinates make the next ones
+- the new nodes created with the parent node will be put on the queue, and the visited one on the tracking one
+- use coordinates vale to check duplicates
+- stop once node is discovered
+*/
 
 const hasValue = function hasSameValue(coordinates, queue) {
 	let result = false;
 	for (let cord of queue) {
-		let cordStr = JSON.stringify(cord);
+		let cordStr = JSON.stringify(cord.coordinates);
 		let coordinatesStr = JSON.stringify(coordinates);
 		if (cordStr == coordinatesStr) {
 			result = true;
@@ -116,3 +131,18 @@ const plays = function possiblePlays(visitedNode) {
 	}
 	return moves;
 };
+
+const search = function searchGraph(graph) {
+	let adjacencyList = graph;
+	let curr = adjacencyList[0].root;
+	let prev = null;
+
+	for (let i = 0; i < 3; i++) {
+		debugger;
+		prev = curr;
+		curr = curr.nextNode;
+	}
+};
+// use tracker to put nodes there and when iterate check if this value was visited
+// if yes use nextNode.
+//  if it hits null return to root
