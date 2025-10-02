@@ -2,36 +2,6 @@
 
 import { linkedList, Node } from './classes.js';
 
-/* 
-	PSEUDOCODE: 
-
-	Info:
-	- (u,v) in a undirected graph an edge connects u -> v meaning in this
-	example we u = coordinate row column meaning u = (u,v) and v = (u,v)
-	to a total of ((u,v),(u,v)) 
-	- each square of the node is a vertex
-
-	Rules: 
-	- two steps forward one step left (two column moves one row move)
-	- one steps forward two steps left (one column move two row moves)
-
-	Traversal BFS: 
-	- Two queues each for a different path
-	- Traverse both
-	- Compare which queue has the shortest length 
-	- return the one with the shortest length 
-
-
-	Moves:
-	- Cannot go overboard (need to check with debugger)
-
-	Shortest path:
-	- Find a way to traverse the graph and its different paths to the endCord.
-	- Need to keep track of the paths to not repeat.
-
-
-	*/
-
 export const knight = function knightMoves(startCord, endCord) {
 	let [startRow, startCol] = startCord;
 	let [endRow, endCol] = endCord;
@@ -48,16 +18,27 @@ export const knight = function knightMoves(startCord, endCord) {
 	) {
 		throw Error('Wrong Coordinates');
 	}
+	debugger;
+	let adjacencyList = graph(startCord, endCord);
+	let lastIndex = adjacencyList[adjacencyList.length - 1];
+	let distance = lastIndex.distance;
+	let path = [lastIndex.vertex];
+	let curr = lastIndex.parent;
+	while (curr != null) {
+		path.unshift(curr.coordinates);
+		curr = curr.parent;
+	}
 
-	let adjacencyList = graph(startCol, endCord);
+	console.log(`You did it in ${distance} moves! Here's your path:`);
+	for (let i = 0; i < path.length; i++) {
+		console.log(path[i]);
+	}
 };
 
 export const graph = function representGraph(startCord, endCord) {
-	debugger;
 	let visitedNodes = [];
 	let adjacencyList = [];
-	let distance = null;
-	let node = new Node(startCord, distance);
+	let node = new Node(startCord);
 	let queue = [node];
 	while (queue.length != 0) {
 		let visitVertex = queue[0];
@@ -71,7 +52,11 @@ export const graph = function representGraph(startCord, endCord) {
 		if (!hasValue(endCord, queue)) {
 			for (let i = 0; i < moves.length; i++) {
 				if (!hasValue(moves[i], queue) && !hasValue(moves[i], visitedNodes)) {
-					let nextNode = new Node(moves[i], distance + 1, visitVertex);
+					let nextNode = new Node(
+						moves[i],
+						visitVertex.distance + 1,
+						visitVertex
+					);
 					list.addNode(nextNode);
 					queue.push(nextNode);
 					if (JSON.stringify(moves[i]) == JSON.stringify(endCord)) break;
@@ -80,17 +65,9 @@ export const graph = function representGraph(startCord, endCord) {
 		}
 		adjacencyList.push(list);
 		queue.splice(0, 1);
-		distance += 1;
 	}
 	return adjacencyList;
 };
-
-/* create a node that initially goes on to the queue
-- pick that node read it and based on its value coordinates make the next ones
-- the new nodes created with the parent node will be put on the queue, and the visited one on the tracking one
-- use coordinates vale to check duplicates
-- stop once node is discovered
-*/
 
 const hasValue = function hasSameValue(coordinates, queue) {
 	let result = false;
@@ -131,18 +108,3 @@ const plays = function possiblePlays(visitedNode) {
 	}
 	return moves;
 };
-
-const search = function searchGraph(graph) {
-	let adjacencyList = graph;
-	let curr = adjacencyList[0].root;
-	let prev = null;
-
-	for (let i = 0; i < 3; i++) {
-		debugger;
-		prev = curr;
-		curr = curr.nextNode;
-	}
-};
-// use tracker to put nodes there and when iterate check if this value was visited
-// if yes use nextNode.
-//  if it hits null return to root
