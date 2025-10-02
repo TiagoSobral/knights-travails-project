@@ -1,27 +1,28 @@
-class Node {
-	constructor(coordinates, nextNode = null) {
+export class Node {
+	constructor(coordinates, distance, parent = null) {
 		this.coordinates = coordinates;
-		this.nextNode = nextNode;
+		this.distance = distance;
+		this.parent = parent;
 	}
 }
 
 export class linkedList {
-	vertex;
-	root;
-
-	addVertex(coordinates) {
-		this.vertex = coordinates;
+	constructor(vertex, distance, parent) {
+		this.vertex = vertex;
+		this.distance = distance;
+		this.parent = parent;
 	}
 
-	addNode(coordinates) {
-		let curr = this.root;
-		if (curr == undefined) {
-			this.root = new Node(coordinates);
+	addNode(node) {
+		// debugger;
+		let curr = this;
+		if (curr.nextNode == undefined) {
+			curr.nextNode = node;
 		} else {
-			while (curr.nextNode != null) {
+			while (curr.nextNode != undefined) {
 				curr = curr.nextNode;
 			}
-			curr.nextNode = new Node(coordinates);
+			curr.nextNode = node;
 		}
 	}
 }
