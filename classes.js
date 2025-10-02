@@ -1,5 +1,5 @@
 export class Node {
-	constructor(coordinates, distance, parent = null) {
+	constructor(coordinates, distance = null, parent = null) {
 		this.coordinates = coordinates;
 		this.distance = distance;
 		this.parent = parent;
@@ -14,7 +14,6 @@ export class linkedList {
 	}
 
 	addNode(node) {
-		// debugger;
 		let curr = this;
 		if (curr.nextNode == undefined) {
 			curr.nextNode = node;
